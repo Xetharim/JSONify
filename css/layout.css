@@ -1,0 +1,124 @@
+/* Layout refinements: clearer navigation, less crowded advanced panels, and room to work. */
+.tool-nav {
+  align-items: center;
+  min-height: 54px;
+  gap: 5px;
+  padding: 6px 14px;
+}
+
+.tool-nav-button {
+  min-width: 0;
+  height: 38px;
+  padding: 0 13px;
+  border-radius: 7px;
+}
+
+.tool-nav-button.selected {
+  background: var(--accent-soft);
+}
+
+.tool-nav-button.selected::after { display: none; }
+
+.tool-nav-search {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  height: 34px;
+  margin-left: auto;
+  padding: 0 10px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: var(--surface);
+  color: var(--muted);
+  font: 10px var(--sans);
+  cursor: pointer;
+}
+
+.tool-nav-search:hover { border-color: var(--accent); color: var(--accent); }
+.tool-nav-search:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.tool-nav-search kbd { padding: 3px 5px; border: 1px solid var(--line); border-radius: 4px; color: var(--subtle); font: 9px var(--mono); }
+.tool-nav-search-icon { display: none; }
+
+.api-advanced {
+  margin-top: 10px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: var(--surface-2);
+}
+
+.api-advanced > summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 34px;
+  padding: 0 10px;
+  color: var(--ink);
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+}
+
+.api-advanced > summary::-webkit-details-marker { display: none; }
+.api-advanced > summary::before { content: '▸'; color: var(--muted); font: 12px var(--mono); transition: transform .15s; }
+.api-advanced[open] > summary::before { transform: rotate(90deg); }
+.api-advanced > summary span { color: var(--muted); font-size: 9px; font-weight: 400; }
+.api-advanced[open] > .api-workspace-row,
+.api-advanced[open] > .api-auth-row,
+.api-advanced[open] > .api-editors,
+.api-advanced[open] > .api-assertions { margin-right: 10px; margin-left: 10px; }
+.api-advanced > .api-workspace-row { padding-top: 8px; border-top: 1px solid var(--line); }
+.api-advanced > .api-assertions { padding-bottom: 10px; }
+.api-advanced + .api-result-meta { padding-top: 2px; }
+
+.data-tools-heading {
+  align-items: flex-start;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line);
+}
+
+.data-tools-heading label { align-items: flex-start; flex-direction: column; gap: 5px; }
+.data-tools-heading select { min-width: min(360px, 43vw); max-width: 100%; }
+.data-tools-heading select optgroup { color: var(--accent); font-weight: 700; }
+.data-tools-heading select option { color: var(--ink); font-weight: 400; }
+.data-tool-help { min-height: 1.5em; }
+.data-presets, .workspace-tools { gap: 7px 9px; }
+.workspace-tools { margin-top: 8px; }
+
+.schema-designer, .schema-reference-panel { grid-column: 2 / 4; width: 100%; }
+.schema-reference-panel { border: 1px solid var(--line); border-radius: 6px; }
+.schema-reference-panel > summary { padding: 8px 10px; color: var(--muted); font-size: 10px; cursor: pointer; }
+.schema-reference-panel > label { display: flex; flex-direction: column; gap: 6px; padding: 0 10px 9px; color: var(--muted); font-size: 10px; }
+.schema-reference-panel textarea { width: 100%; min-height: 90px; resize: vertical; border: 1px solid var(--line); border-radius: 5px; padding: 8px; background: var(--surface-2); color: var(--ink); font: 10px/1.5 var(--mono); }
+.schema-reference-panel small { display: block; padding: 0 10px 9px; color: var(--muted); font-size: 9px; }
+
+.editors .editor-wrap { height: clamp(300px, 46vh, 560px); }
+
+.theme-dark .tool-nav-button.selected { background: var(--accent-soft); }
+.theme-dark .api-advanced { background: var(--surface); }
+
+@media (max-width: 900px) {
+  .tool-nav { overflow-x: auto; justify-content: flex-start; scrollbar-width: thin; }
+  .tool-nav-button { flex: 0 0 auto; }
+  .tool-nav-search { flex: 0 0 auto; }
+  .editors .editor-wrap { height: clamp(280px, 42vh, 470px); }
+}
+
+@media (max-width: 640px) {
+  .tool-nav { gap: 2px; padding: 5px; }
+  .tool-nav-button { flex: 1 0 auto; height: 36px; padding: 0 8px; }
+  .tool-nav-button.selected::after { display: none; }
+  .tool-nav-search { width: 36px; min-width: 36px; justify-content: center; margin-left: 3px; padding: 0; }
+  .tool-nav-search-label, .tool-nav-search kbd { display: none; }
+  .tool-nav-search-icon { display: block !important; width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; }
+  .api-advanced > summary { align-items: flex-start; flex-wrap: wrap; padding: 9px; }
+  .api-advanced > summary span { flex-basis: calc(100% - 22px); margin-left: 22px; }
+  .api-advanced[open] > .api-workspace-row,
+  .api-advanced[open] > .api-auth-row,
+  .api-advanced[open] > .api-editors,
+  .api-advanced[open] > .api-assertions { margin-right: 8px; margin-left: 8px; }
+  .api-advanced > .api-assertions { padding-bottom: 8px; }
+  .data-tools-heading select { min-width: 0; width: 100%; }
+  .schema-designer, .schema-reference-panel, .schema-actions, .schema-tools > p { grid-column: 1; }
+  .editors .editor-wrap { height: 300px; }
+}

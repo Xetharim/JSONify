@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f6f7f9">
+  <meta name="description" content="Format, validate, and minify JSON in your browser. Your data stays on your device.">
+  <title>JSONify — JSON Formatter & Validator</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <script src="vendor/jsonify-libs.js" defer></script>
+  <script src="js/main.js" defer></script>
+  <script src="js/json-tools.js" defer></script>
+  <script src="js/standards-tools.js" defer></script>
+  <script src="js/data-tools.js" defer></script>
+  <script src="js/api-tools.js" defer></script>
+  <script src="js/backend-tools.js" defer></script>
+  <script src="js/commands.js" defer></script>
+  <script src="js/editor-events.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="JSONify home">
+        <span class="brand-mark" aria-hidden="true"><span>{</span><i>;</i><span>}</span></span>
+        <span class="brand-name">jsonify<span class="brand-dot">.</span></span>
+      </a>
+      <div class="topbar-right">
+        <span class="privacy-note"><span class="privacy-dot"></span>Runs locally in your browser</span>
+        <span class="version-pill">v1.0</span>
+        <button class="icon-button theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark theme" title="Toggle theme">
+          <svg class="sun-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/></svg>
+          <svg class="moon-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 13.1A8.8 8.8 0 0 1 10.9 3.2 8.9 8.9 0 1 0 20.8 13.1Z"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <section class="intro">
+        <div class="eyebrow"><span class="eyebrow-line"></span>JSON TOOLKIT <span class="eyebrow-line"></span></div>
+        <h1>Make your JSON <span>make sense.</span></h1>
+        <p>Format, inspect, query, and convert developer data. Fast, capable, and private.</p>
+        <div class="quick-start" aria-label="Quick start">
+          <span class="quick-start-label">New here?</span>
+          <span class="quick-start-copy">Paste data into Input, choose a section, then run an action.</span>
+          <button type="button" class="quick-start-button" id="quick-sample-button">Try a sample</button>
+          <button type="button" class="quick-start-button" id="quick-file-button">Open a file</button>
+          <button type="button" class="quick-start-button subtle" id="quick-find-button">Find a tool <kbd>Ctrl K</kbd></button>
+        </div>
+      </section>
+
+      <section class="workspace" aria-label="JSON workspace">
+        <nav class="tool-nav" aria-label="Tool sections">
+          <button type="button" class="tool-nav-button selected" data-tool-tab="format" aria-pressed="true"><span>01</span>Format</button>
+          <button type="button" class="tool-nav-button" data-tool-tab="convert" aria-pressed="false"><span>02</span>Convert</button>
+          <button type="button" class="tool-nav-button" data-tool-tab="validate" aria-pressed="false"><span>03</span>Validate</button>
+          <button type="button" class="tool-nav-button" data-tool-tab="inspect" aria-pressed="false"><span>04</span>Inspect</button>
+          <button type="button" class="tool-nav-button" data-tool-tab="repair" aria-pressed="false"><span>05</span>Repair</button>
+          <button type="button" class="tool-nav-button" data-tool-tab="data" aria-pressed="false"><span>06</span>Data tools</button>
+          <button type="button" class="tool-nav-search" id="command-trigger" aria-label="Find a tool (Control or Command K)"><svg class="tool-nav-search-icon" viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5"/><path d="m13 13 4 4"/></svg><span class="tool-nav-search-label">Find a tool</span><kbd>Ctrl K</kbd></button>
+        </nav>
+
+        <details class="quick-help">
+          <summary>How to use JSONify <span>Quick guide · shortcuts · privacy</span></summary>
+          <div class="quick-help-content">
+            <ol>
+              <li>Paste or type data in <strong>Input</strong>, drag in a file, or choose <strong>Open a file</strong>.</li>
+              <li>Pick a section above. Available actions and options update for that task.</li>
+              <li>Run the highlighted action. Review the result in <strong>Output</strong>, then copy or download it.</li>
+            </ol>
+            <p><kbd>Ctrl</kbd>/<kbd>⌘</kbd> + <kbd>Enter</kbd> runs the selected action. <kbd>Ctrl</kbd>/<kbd>⌘</kbd> + <kbd>K</kbd> searches tools. JSON processing stays in this browser; API requests are sent only when you choose to send one.</p>
+          </div>
+        </details>
+
+        <div class="toolbar" id="tool-toolbar">
+          <div class="toolbar-actions" role="group" aria-label="JSON actions">
+            <button class="action-button primary is-active" id="format-button" data-tool-section="format" type="button" aria-pressed="true"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 5h12M4 10h8M4 15h12M15 8l2 2-2 2"/></svg>Format</button>
+            <button class="action-button" id="minify-button" data-tool-section="format" type="button" aria-pressed="false"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 6h12M4 10h12M4 14h12"/><path d="m7 4-3 2 3 2m6 4 3 2-3 2"/></svg>Minify</button>
+            <button class="action-button" id="validate-button" data-tool-section="validate" hidden type="button" aria-pressed="false"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m4 10 4 4 8-8"/><circle cx="10" cy="10" r="8"/></svg>Validate</button>
+            <label class="validation-target" data-tool-section="validate" hidden for="validation-format">as <select id="validation-format" aria-label="Format to validate"><option value="json">JSON</option><option value="csv">CSV</option><option value="jsonl">JSON Lines</option></select></label>
+            <button class="action-button" id="sort-button" data-tool-section="format" type="button" aria-pressed="false" title="Sort object keys alphabetically"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 4v12m0 0-3-3m3 3 3-3M11 5h7m-7 5h5m-5 5h3"/></svg>Sort keys</button>
+            <button class="action-button" id="csv-button" data-tool-section="convert" hidden type="button" aria-pressed="false" title="Convert an array of objects into a CSV file"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 4h14v12H3zM3 8h14M8 4v12m5-12v12"/></svg>To CSV</button>
+            <button class="action-button" id="csv-json-button" data-tool-section="convert" hidden type="button" aria-pressed="false" title="Convert CSV rows to a JSON array"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 4h12v12H4zM4 8h12M8 4v12m4-12v12"/><path d="m2 10 2 2 2-2"/></svg>CSV → JSON</button>
+            <button class="action-button" id="jsonl-json-button" data-tool-section="convert" hidden type="button" aria-pressed="false" title="Convert JSON Lines into a JSON array"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 4h12M4 8h12M4 12h8M4 16h12"/><path d="m14 10 3 3-3 3"/></svg>JSONL → JSON</button>
+            <button class="action-button" id="typescript-button" data-tool-section="convert" hidden type="button" aria-pressed="false" title="Generate TypeScript types from JSON"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 5h14M10 5v10m-3-7h6M14 15h3m-1.5-1.5v3"/></svg>TypeScript</button>
+            <button class="action-button" id="repair-button" data-tool-section="repair" hidden type="button" aria-pressed="false" title="Repair common JSON mistakes"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M16 7a6.5 6.5 0 0 0-11-2L3 7m0-4v4h4M4 13a6.5 6.5 0 0 0 11 2l2-2m0 4v-4h-4"/></svg>Repair JSON</button>
+          </div>
+          <div class="toolbar-options">
+            <label class="indent-control" data-tool-section="format" for="indent-select">Indent
+              <select id="indent-select" aria-label="Indentation size"><option value="2">2 spaces</option><option value="4">4 spaces</option></select>
+            </label>
+            <span class="toolbar-divider"></span>
+            <button class="text-button" id="sample-button" data-tool-section="format" type="button"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 3h8l4 4v10H4z"/><path d="M12 3v5h4M7 12h6m-6 3h6"/></svg>Load sample</button>
+            <button class="text-button" id="open-file-button" data-tool-section="convert" hidden type="button"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 6V4h14v2M10 4v10m-4-4 4 4 4-4M4 16h12"/></svg>Open file</button>
+            <input id="file-input" type="file" accept=".json,.csv,.tsv,.jsonl,.ndjson,.xml,.yaml,.yml,application/json,text/csv,text/plain,application/xml" multiple hidden>
+            <button class="text-button clear-button" id="clear-button" data-tool-section="format" type="button"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 6h12M8 6V4h4v2m3 0-.7 10H5.7L5 6m3 3v4m4-4v4"/></svg>Clear</button>
+          </div>
+        </div>
+
+        <details class="api-panel" data-tool-panel="convert" hidden>
+          <summary><span>API Response Inspector</span><span class="schema-summary-note">Requests run only when you click Send</span></summary>
+          <div class="api-tools">
+            <div class="api-request-line"><select id="api-method" aria-label="HTTP method"><option>GET</option><option>POST</option><option>PUT</option><option>PATCH</option><option>DELETE</option></select><input id="api-url" type="url" placeholder="https://api.example.com/items" aria-label="API URL"><button id="api-send-button" type="button">Send request</button></div>
+            <details class="api-advanced"><summary>Request settings <span>Saved requests · auth · query · headers · body · assertions</span></summary>
+              <div class="api-workspace-row"><label>Saved request<select id="api-collection-select"><option value="">Choose a saved request…</option></select></label><input id="api-save-name" placeholder="Request name" aria-label="Saved request name"><button type="button" id="api-save-button">Save request</button><label>Environment<select id="api-environment"><option value="">No environment</option></select></label><button type="button" id="api-env-edit-button">Edit environments</button></div>
+              <div class="api-auth-row"><label>Authentication<select id="api-auth-type"><option value="none">None</option><option value="bearer">Bearer token</option><option value="basic">Basic auth</option><option value="api-key">API key header</option></select></label><input id="api-auth-user" placeholder="Username" aria-label="Basic auth username" hidden><input id="api-auth-secret" type="password" placeholder="Token / password / key" aria-label="Authentication secret"><input id="api-auth-key" placeholder="Header name (e.g. X-API-Key)" aria-label="API key header name" hidden></div>
+              <div class="api-editors"><label>Query parameters<textarea id="api-query" spellcheck="false" placeholder='{"page":"1"}'></textarea></label><label>Request headers<textarea id="api-headers" spellcheck="false" placeholder='{"Accept":"application/json"}'></textarea></label><label class="api-body-label">Request body<textarea id="api-body" spellcheck="false" placeholder='{"name":"Example"}'></textarea></label></div>
+              <div class="api-assertions"><label for="api-assertions">Response assertions (JSON)</label><textarea id="api-assertions" spellcheck="false" placeholder='{"status":200,"$.ok":true,"$.data": "exists"}'></textarea><label for="api-history">Recent requests<select id="api-history"><option value="">No request history</option></select></label></div>
+            </details>
+            <div class="api-result-meta"><span id="api-status">No request sent</span><span id="api-timing"></span><label><input id="api-validate-response" type="checkbox"> Validate response with current schema</label></div><p class="api-local-note">Saved requests, environments, and up to 20 response history entries stay in this browser. Secrets are not included in saved requests.</p>
+          </div>
+        </details>
+
+        <details class="backend-panel" data-tool-panel="convert" hidden>
+          <summary><span>Local API background services</span><span class="schema-summary-note">Needs the optional Node service</span></summary>
+          <div class="backend-tools">
+            <div class="backend-status-row"><span id="backend-status">Checking local service…</span><button type="button" id="backend-refresh">Refresh service status</button></div>
+            <div class="backend-grid">
+              <section><h3>Schedule this request</h3><label>Run every<select id="schedule-interval"><option value="30">30 seconds</option><option value="60" selected>1 minute</option><option value="300">5 minutes</option><option value="3600">1 hour</option></select></label><button type="button" id="schedule-create">Create schedule</button><div id="schedule-list" class="backend-list"></div></section>
+              <section><h3>Monitor an endpoint</h3><label>Endpoint URL<input id="monitor-url" type="url" placeholder="https://api.example.com/health"></label><label>Check every<select id="monitor-interval"><option value="15">15 seconds</option><option value="60" selected>1 minute</option><option value="300">5 minutes</option></select></label><button type="button" id="monitor-create">Start monitoring</button><div id="monitor-list" class="backend-list"></div></section>
+              <section><h3>Webhook receiver</h3><button type="button" id="webhook-create">Create local webhook URL</button><div id="webhook-list" class="backend-list"></div></section>
+              <section><h3>Bounded API load check</h3><label>Requests (max 50)<input id="load-count" type="number" min="1" max="50" value="5"></label><label>Concurrent (max 5)<input id="load-concurrency" type="number" min="1" max="5" value="2"></label><button type="button" id="load-run">Run load check</button><div id="load-result" class="backend-list"></div></section>
+            </div>
+            <p class="backend-note">Schedules store request headers and bodies in the local .jsonify-state.json file; webhook payloads are saved there too. Protect this file. Load checks send the chosen request to the target, so use only endpoints you own or may test. Service binds to this computer only.</p>
+          </div>
+        </details>
+
+        <section class="repair-report" data-tool-panel="repair" hidden aria-live="polite">
+          <div class="repair-report-heading"><strong id="repair-count">Repair report</strong><span>Review changes before using the corrected JSON.</span></div>
+          <ul id="repair-list"><li>Choose Repair JSON to inspect common syntax issues.</li></ul>
+        </section>
+
+        <div class="path-toolbar" data-tool-panel="inspect" hidden><label for="json-path">JSONPath</label><input id="json-path" type="text" spellcheck="false" placeholder="$.users[?@.active == true].name" aria-label="JSONPath expression"><button id="extract-path-button" type="button">Extract</button><label class="path-watch"><input id="watch-path" type="checkbox">Watch while editing</label><span>RFC 9535 · filters · slices · wildcards · recursive descent</span></div>
+
+        <details class="schema-panel" data-tool-panel="validate" hidden>
+          <summary><span>JSON Schema validation</span><span class="schema-summary-note">Check structure and constraints locally</span></summary>
+            <div class="schema-tools">
+            <label for="json-schema">Schema</label>
+            <textarea id="json-schema" spellcheck="false" aria-label="JSON Schema" placeholder='{"type":"object","required":["name"],"properties":{"name":{"type":"string","minLength":1}}}'></textarea>
+            <details class="schema-reference-panel"><summary>Offline reference schemas</summary><label for="schema-references">Register external `$ref` schemas by URI<textarea id="schema-references" spellcheck="false" placeholder='{"https://example.test/common.json":{"$id":"https://example.test/common.json","$defs":{"id":{"type":"string"}}}}'></textarea></label><small>References are resolved locally from this registry. JSONify never fetches schema URLs.</small></details>
+            <details class="schema-designer"><summary>Visual schema designer</summary><div class="designer-tools"><div id="designer-rows" class="designer-rows"></div><div class="designer-buttons"><button type="button" id="designer-add">Add property</button><button type="button" id="designer-apply">Apply to schema</button></div><p>Edits root object properties, types, descriptions, and required fields. Advanced rules stay in the schema editor.</p></div></details>
+            <div class="schema-actions"><label for="schema-draft">Draft<select id="schema-draft"><option value="2020-12">2020-12</option><option value="2019-09">2019-09</option><option value="draft-07">Draft 7</option></select></label><button type="button" id="schema-example-button">Use example</button><button type="button" id="schema-generate-button" aria-pressed="false">Generate from input</button><button type="button" id="schema-validate-button" aria-pressed="false">Validate against schema</button></div>
+            <p>Ajv validates Draft 7, 2019-09, or 2020-12, including all draft keywords, formats, combinators, and reference schemas registered above.</p>
+          </div>
+        </details>
+
+        <details class="mock-panel" data-tool-panel="validate" hidden>
+          <summary><span>Mock JSON Data Generator</span><span class="schema-summary-note">Use a schema or a sample template</span></summary>
+          <div class="mock-tools"><label for="mock-count">Records<select id="mock-count"><option>1</option><option>5</option><option selected>10</option><option>25</option><option>50</option><option>100</option></select></label><label for="mock-template">Optional JSON template<textarea id="mock-template" spellcheck="false" placeholder='{"id":1,"name":"Alex","email":"alex@example.test"}'></textarea></label><button id="mock-generate-button" type="button">Generate mock data</button><p>When a template is provided, its values are used as examples. Otherwise, use the JSON Schema above.</p></div>
+        </details>
+
+        <details class="compare-panel" data-tool-panel="inspect" hidden>
+          <summary><span>Compare JSON documents</span><span class="schema-summary-note">Find added, removed, and changed values</span></summary>
+          <div class="compare-tools"><label for="compare-json">Second document</label><textarea id="compare-json" spellcheck="false" placeholder="Paste the JSON you want to compare with the input…" aria-label="Second JSON document"></textarea><label class="ignore-label" for="compare-ignore">Ignore keys or paths</label><input id="compare-ignore" type="text" placeholder="e.g. updatedAt, $.meta.requestId"><button id="compare-button" type="button" aria-pressed="false">Compare documents</button></div>
+          <div class="diff-results" id="diff-results" hidden aria-live="polite"></div>
+        </details>
+
+        <details class="change-panel" data-tool-panel="inspect" hidden>
+          <summary><span>Live change tracker</span><span class="schema-summary-note">Watch edits as you work</span></summary>
+          <div class="change-tools"><button type="button" id="change-track-button">Start tracking changes</button><span id="change-track-status">Not tracking</span></div>
+          <div id="change-log" class="change-log" aria-live="polite"><p>No changes recorded.</p></div>
+        </details>
+
+        <details class="quality-panel" data-tool-panel="inspect" hidden>
+          <summary><span>Data Quality profile</span><span class="schema-summary-note">Find duplicates, missing fields, type mismatches, and nesting hot spots</span></summary>
+          <div class="quality-tools"><button id="quality-scan-button" type="button" aria-pressed="false">Analyze JSON</button><button id="deduplicate-button" type="button" disabled>Remove duplicate root rows</button><span id="quality-summary">No scan run yet.</span></div>
+          <div class="quality-results" id="quality-results" hidden aria-live="polite"></div>
+        </details>
+
+        <section class="data-tools-panel" data-tool-panel="data" hidden>
+          <div class="data-tools-heading"><div><strong>Data tools</strong><span>Manipulate, analyze, and move JSON data. Processing stays in this browser.</span></div><label for="data-tool-select">Choose a tool<select id="data-tool-select"><optgroup label="Browse &amp; clean"><option value="table" selected>Database viewer</option><option value="relations">Relationship explorer</option><option value="dedupe">Deduplicate values</option><option value="sample">Random sample</option><option value="sort-records">Sort records</option><option value="mask">Mask sensitive values</option></optgroup><optgroup label="Analyze"><option value="aggregate">Aggregate records</option><option value="pivot">Pivot summary</option><option value="security">Security scan</option><option value="performance">Performance profile</option><option value="heatmap">Structure heatmap</option><option value="ast">JSON AST explorer</option><option value="compatibility">Compatibility check</option><option value="unicode">Inspect Unicode</option><option value="schema-docs">Schema documentation</option><option value="schema-tests">Schema test cases</option><option value="schema-evolution">Schema evolution check</option><option value="impact">Change impact scan</option><option value="jsonpath-opt">JSONPath query optimizer</option></optgroup><optgroup label="Transform"><option value="normalize">Normalize property names</option><option value="coerce">Normalize field types</option><option value="bulk">Bulk property editor</option><option value="array">Array set operations</option><option value="flatten">Flatten object</option><option value="unflatten">Unflatten object</option><option value="patch">JSON Patch</option><option value="migration">Structure migration</option><option value="pipeline">Run transform pipeline</option></optgroup><optgroup label="Convert"><option value="sql">Generate SQL</option><option value="sql-json">SQL result to JSON (CSV/TSV)</option><option value="canonical">RFC 8785 canonical JSON</option><option value="yaml-json">YAML to JSON</option><option value="json-yaml">JSON to YAML</option><option value="xml-json">XML to JSON</option><option value="jsonc-json">JSON5/JSONC to strict JSON</option><option value="json-xml">JSON to XML</option><option value="graphql">Generate GraphQL types</option><option value="graphql-inspect">Inspect GraphQL response</option></optgroup><optgroup label="Developer tools"><option value="fuzz">JSON parser fuzz cases</option><option value="search">Search multiple JSON documents</option><option value="sign">Sign canonical JSON (HMAC)</option><option value="verify">Verify HMAC signature</option><option value="openapi-import">Import OpenAPI collection</option><option value="openapi-export">Export OpenAPI collection</option></optgroup></select></label></div>
+          <div class="data-tool-options"><label id="data-option-label" for="data-option">Options<input id="data-option" type="text" placeholder="e.g. 10, category, id"></label><label id="data-second-label" for="data-second" hidden>Second JSON document<textarea id="data-second" spellcheck="false" placeholder="Paste a second JSON document for set operations, patches, or migration…"></textarea></label><button type="button" id="run-data-tool">Run tool</button></div>
+          <p class="data-tool-help" id="data-tool-help">Browse array records as a table.</p>
+          <div class="data-presets"><label>Preset name<input id="preset-name" placeholder="e.g. Normalize records"></label><button type="button" id="save-preset-button">Save current tool</button><label>Saved presets<select id="preset-select"><option value="">No presets saved</option></select></label><button type="button" id="load-preset-button">Load preset</button></div>
+          <div class="workspace-tools"><button type="button" id="save-version-button">Save document version</button><label>Saved versions<select id="version-select"><option value="">No versions saved</option></select></label><button type="button" id="restore-version-button">Restore version</button><button type="button" id="export-workspace-button">Export workspace</button><button type="button" id="import-workspace-button">Import workspace</button><input id="workspace-file" type="file" accept="application/json,.json" hidden></div>
+        </section>
+
+        <div class="editors">
+          <section class="editor-card" aria-labelledby="input-title">
+            <div class="editor-heading">
+              <div class="panel-title"><span class="panel-index">01</span><h2 id="input-title">Input</h2><span class="panel-caption">Paste or type your JSON</span></div>
+              <span class="editor-badge input-badge"><span class="badge-dot"></span>READY</span>
+            </div>
+            <div class="editor-wrap">
+              <div class="line-numbers" id="input-lines" aria-hidden="true">1</div>
+              <textarea id="json-input" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" aria-label="JSON input" placeholder="Paste your JSON here…" wrap="off"></textarea>
+            </div>
+            <div class="editor-footer"><span id="input-hint">Ctrl + Enter runs the selected tool · Ctrl + K opens commands.</span><span><b id="input-lines-count">0</b> lines <i>·</i> <b id="input-char-count">0</b> chars</span></div>
+          </section>
+
+          <div class="flow-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></div>
+
+          <section class="editor-card output-card" aria-labelledby="output-title">
+            <div class="editor-heading">
+              <div class="panel-title"><span class="panel-index">02</span><h2 id="output-title">Output</h2><span class="panel-caption">Your result appears here</span></div>
+              <div class="output-actions"><div class="view-switch" data-tool-panel="inspect" role="tablist" aria-label="Output view" hidden><button class="view-tab selected" id="code-view-button" type="button" role="tab" aria-selected="true">Code</button><button class="view-tab" id="tree-view-button" type="button" role="tab" aria-selected="false">Tree</button></div><button class="small-button" id="copy-button" type="button" disabled><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="1.5"/><path d="M13 7V4.5A1.5 1.5 0 0 0 11.5 3h-7A1.5 1.5 0 0 0 3 4.5v7A1.5 1.5 0 0 0 4.5 13H7"/></svg><span>Copy</span></button><button class="small-button download-button" id="download-button" type="button" disabled><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3v10m-4-4 4 4 4-4M4 15v2h12v-2"/></svg><span>Download</span></button></div>
+            </div>
+            <div class="search-row" data-tool-panel="inspect" hidden><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5"/><path d="m13 13 4 4"/></svg><input id="output-search" type="search" placeholder="Find in output…" aria-label="Find text in output"><span id="search-count">0 matches</span><button id="search-prev" type="button" aria-label="Previous match">↑</button><button id="search-next" type="button" aria-label="Next match">↓</button></div>
+            <div class="editor-wrap output-wrap">
+              <div class="line-numbers output-lines" id="output-lines" aria-hidden="true">1</div>
+              <pre id="json-output" aria-label="JSON output" aria-live="polite"><span class="output-placeholder">Formatted JSON will appear here<span class="placeholder-cursor"></span></span></pre>
+              <div class="tree-view" id="json-tree" aria-label="JSON tree view" hidden></div>
+            </div>
+            <div class="editor-footer"><span id="output-hint">Ready when you are.</span><span><b id="output-lines-count">0</b> lines <i>·</i> <b id="output-char-count">0</b> chars</span></div>
+          </section>
+        </div>
+
+        <div class="status-bar" id="status-bar" role="status" aria-live="polite">
+          <div class="status-message"><span class="status-indicator" id="status-indicator"></span><span id="status-text">Ready to work with your JSON</span></div>
+          <div class="status-meta"><span id="size-text">0 B</span><span class="meta-separator"></span><span id="validity-text">AWAITING INPUT</span></div>
+        </div>
+      </section>
+
+      <section class="feature-strip" aria-label="Features">
+        <div class="feature"><span class="feature-icon green">{ }</span><div><strong>Pretty or compact</strong><span>Format and minify in one click</span></div></div>
+        <div class="feature"><span class="feature-icon blue"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m4 10 4 4 8-8"/><circle cx="10" cy="10" r="8"/></svg></span><div><strong>Catch errors early</strong><span>Know what's valid, right away</span></div></div>
+        <div class="feature"><span class="feature-icon amber"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2.5 3 5.5v4.3c0 4.1 2.9 6.7 7 7.7 4.1-1 7-3.6 7-7.7V5.5z"/><path d="m7 10 2 2 4-4"/></svg></span><div><strong>Private by design</strong><span>Your JSON stays on your device</span></div></div>
+      </section>
+    </main>
+
+    <footer class="footer"><span>Built for the details.</span><span>JSONify <span class="footer-dot">·</span> JSON Formatter &amp; Validator</span></footer>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <dialog id="command-dialog" class="command-dialog"><form method="dialog"><label for="command-search">Jump to a tool or action</label><input id="command-search" type="search" placeholder="Type a command…" autocomplete="off"><div id="command-results" role="listbox"></div><button class="command-close" value="cancel">Close <kbd>Esc</kbd></button></form></dialog>
+</body>
+</html>

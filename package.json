@@ -1,0 +1,26 @@
+{
+  "name": "jsonify-local-workbench",
+  "version": "1.1.0",
+  "private": true,
+  "description": "Local-first JSON developer workbench",
+  "scripts": {
+    "build:vendor": "node scripts/build-vendor.mjs",
+    "prestart": "node scripts/build-vendor.mjs",
+    "start": "node server.js",
+    "test": "node --test"
+  },
+  "packageManager": "pnpm@11.25.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "ajv": "^8.20.0",
+    "ajv-formats": "^3.0.1",
+    "fast-xml-parser": "^5.11.2",
+    "jsonpath-rfc9535": "^1.3.0",
+    "yaml": "^2.9.1"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2"
+  }
+}
